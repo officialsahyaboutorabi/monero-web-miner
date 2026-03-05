@@ -241,14 +241,27 @@ class MoneroMiner {
     }
 
     setupPoolConnection(wallet, worker) {
-        // Stratum protocol
+        // Buffer for newline-delimited JSON (Stratum protocol)
+        let buffer = '';
+        
         this.ws.onmessage = (event) => {
             try {
-                const data = JSON.parse(event.data);
-                this.handleStratumMessage(data);
+                // Stratum uses newline-delimited JSON
+                buffer += event.data;
+                const lines = buffer.split('\n');
+                buffer = lines.pop(); // Keep incomplete line
+                
+                for (const line of lines) {
+                    if (line.trim()) {
+                        const data = JSON.parse(line);
+                        this.handleStratumMessage(data);
+                    }
+                }
             } catch (e) {
-                // Binary data from pool
-                this.log('Pool data received', 'info');
+                // Handle binary or invalid data
+                if (event.data instanceof Blob) {
+                    this.log('Received binary data from pool', 'info');
+                }
             }
         };
         
@@ -260,7 +273,7 @@ class MoneroMiner {
             this.log('Pool connection error', 'error');
         };
         
-        // Send login
+        // Send login (Stratum format with newline)
         const login = {
             id: 1,
             jsonrpc: '2.0',
@@ -272,18 +285,27 @@ class MoneroMiner {
             }
         };
         
-        this.ws.send(JSON.stringify(login));
+        this.ws.send(JSON.stringify(login) + '\n');
         this.log('Sent login to pool', 'success');
     }
 
     handleStratumMessage(data) {
         if (data.method === 'job') {
             this.job = data.params;
-            this.log('New mining job received', 'success');
+            this.log('New mining job received!', 'success');
+            this.log('  Height: ' + this.job.height, 'info');
             this.log('  Target: ' + this.job.target.substring(0, 16) + '...', 'info');
+            this.log('  You are now mining!', 'success');
         } else if (data.id === 1 && data.result) {
             this.log('Pool login successful!', 'success');
             this.log('  Status: ' + (data.result.status || 'ok'), 'info');
+            if (data.result.job) {
+                this.job = data.result.job;
+                this.log('  Initial job received', 'info');
+            }
+        } else if (data.result && data.result.status === 'OK') {
+            this.log('Share accepted!', 'success');
+            this.stats.acceptedShares = (this.stats.acceptedShares || 0) + 1;
         }
     }
 
