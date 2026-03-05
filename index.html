@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monero Web Miner</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⛏️ Monero Web Miner</h1>
+            <p class="subtitle">Mine XMR directly in your browser</p>
+        </header>
+
+        <div class="main-grid">
+            <!-- Configuration Panel -->
+            <div class="panel config-panel">
+                <h2>⚙️ Configuration</h2>
+                <div class="form-group">
+                    <label for="pool-host">Pool Address</label>
+                    <input type="text" id="pool-host" placeholder="pool.example.com" value="192.168.192.138">
+                </div>
+                <div class="form-group">
+                    <label for="pool-port">WebSocket Port</label>
+                    <input type="number" id="pool-port" placeholder="3334" value="3334">
+                </div>
+                <div class="form-group">
+                    <label for="wallet">Wallet Address</label>
+                    <input type="text" id="wallet" placeholder="Your XMR wallet address..." value="47ucoYKmFAficWjA649pnZNcHWm3co87wipCLYLvTuvzhCcZahT1cSFhLaxZr8okVsZfCbjw236urEPbjbty2ZRWU5yeTxm">
+                </div>
+                <div class="form-group">
+                    <label for="worker">Worker Name (optional)</label>
+                    <input type="text" id="worker" placeholder="web-miner-1" value="web-miner">
+                </div>
+                <div class="form-group">
+                    <label for="threads">Threads: <span id="threads-value">2</span></label>
+                    <input type="range" id="threads" min="1" max="8" value="2">
+                </div>
+            </div>
+
+            <!-- Mining Stats -->
+            <div class="panel stats-panel">
+                <h2>📊 Mining Statistics</h2>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Hashrate</div>
+                        <div class="stat-value" id="hashrate">0 H/s</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Total Hashes</div>
+                        <div class="stat-value" id="total-hashes">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Threads</div>
+                        <div class="stat-value" id="active-threads">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Status</div>
+                        <div class="stat-value" id="status">Stopped</div>
+                    </div>
+                </div>
+
+                <div class="control-buttons">
+                    <button id="start-btn" class="btn btn-start">▶️ Start Mining</button>
+                    <button id="stop-btn" class="btn btn-stop" disabled>⏹️ Stop Mining</button>
+                </div>
+            </div>
+            
+            <!-- Connection Info -->
+            <div class="panel info-panel" style="margin-top: 20px; background: rgba(78, 204, 163, 0.1); border-color: #4ecca3;">
+                <h2>🔌 Direct WebSocket Connection</h2>
+                <div id="connection-info">
+                    <p><strong>Pool IP:</strong> <span style="color: #4ecca3;">192.168.192.138</span></p>
+                    <p><strong>TCP Port (XMRig):</strong> <span style="color: #888;">3333</span></p>
+                    <p><strong>WebSocket Port (Browsers):</strong> <span style="color: #4ecca3;">3334</span></p>
+                    <br>
+                    <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border-left: 3px solid #4ecca3;">
+                        <p style="color: #4ecca3; font-weight: bold; margin-bottom: 10px;">✅ NO PROXY NEEDED!</p>
+                        <p style="color: #888; font-size: 0.9em; margin-bottom: 10px;">
+                            This pool now supports WebSocket natively!<br>
+                            Just run: <code style="background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 4px; color: #4ecca3;">./start-p2pool-with-websocket.sh</code>
+                        </p>
+                        <p style="color: #666; font-size: 0.85em;">
+                            Browsers connect directly on port 3334
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Console Output -->
+        <div class="panel console-panel">
+            <h2>🖥️ Mining Console</h2>
+            <div class="console-header">
+                <button id="clear-console" class="btn-clear">Clear</button>
+            </div>
+            <div id="console" class="console">
+                <div class="console-line system">Welcome to Monero Web Miner v1.0</div>
+                <div class="console-line system">Configure your pool settings and click Start Mining...</div>
+            </div>
+        </div>
+
+        <footer>
+            <p>⚠️ Mining in browsers is not very efficient. Use a dedicated miner for better results.</p>
+            <p>Connecting to: <span id="footer-pool">Not configured</span></p>
+        </footer>
+    </div>
+
+    <!-- Real Web Mining - No external dependencies -->
+    <script src="miner.js?v=2"></script>
+</body>
+</html>

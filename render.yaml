@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: p2pool-ws-proxy
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: POOL_HOST
+        value: 0.tcp.au.ngrok.io
+      - key: POOL_PORT
+        value: 11526

@@ -1,0 +1,16 @@
+{
+  "name": "monero-web-miner",
+  "version": "2.0.0",
+  "description": "Real Monero mining in the browser with pool connection",
+  "main": "ws-proxy.js",
+  "scripts": {
+    "start": "node ws-proxy.js",
+    "proxy": "node ws-proxy.js"
+  },
+  "dependencies": {
+    "ws": "^8.14.2"
+  },
+  "keywords": ["monero", "xmr", "mining", "webminer", "pool"],
+  "author": "",
+  "license": "MIT"
+}
