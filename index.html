@@ -78,12 +78,22 @@
                     <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border-left: 3px solid #4ecca3;">
                         <p style="color: #4ecca3; font-weight: bold; margin-bottom: 10px;">✅ NO PROXY NEEDED!</p>
                         <p style="color: #888; font-size: 0.9em; margin-bottom: 10px;">
-                            This pool now supports WebSocket natively!<br>
-                            Just run: <code style="background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 4px; color: #4ecca3;">./start-p2pool-with-websocket.sh</code>
+                            This pool supports WebSocket natively!<br>
+                            Run: <code style="background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 4px; color: #4ecca3;">./start-p2pool-with-websocket.sh</code>
                         </p>
-                        <p style="color: #666; font-size: 0.85em;">
-                            Browsers connect directly on port 3334
+                    </div>
+                    <br>
+                    <div style="background: rgba(233, 69, 96, 0.1); padding: 15px; border-radius: 8px; border-left: 3px solid #e94560;">
+                        <p style="color: #e94560; font-weight: bold; margin-bottom: 10px;">⚠️ HTTPS ISSUE</p>
+                        <p style="color: #888; font-size: 0.9em; margin-bottom: 10px;">
+                            If accessing via HTTPS (GitHub Pages), browsers block local WS connections.<br>
+                            <strong>Solutions:</strong>
                         </p>
+                        <ol style="color: #888; font-size: 0.85em; margin-left: 20px;">
+                            <li>Open file directly: <code style="color: #4ecca3;">file:///.../web-miner/index.html</code></li>
+                            <li>Run local server: <code style="color: #4ecca3;">./start-local-server.sh</code></li>
+                            <li>Use XMRig for best performance</li>
+                        </ol>
                     </div>
                 </div>
             </div>

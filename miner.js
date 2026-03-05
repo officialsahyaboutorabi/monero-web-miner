@@ -158,9 +158,19 @@ class MoneroMiner {
         this.log('', 'info');
         this.log('Connecting to pool via WebSocket...', 'info');
         
+        // Check if page is HTTPS
+        const isHttps = window.location.protocol === 'https:';
+        
         // Connect directly to P2Pool's WebSocket bridge
         // P2Pool now has native WebSocket support on port 3334
-        const wsUrl = 'ws://' + host + ':' + port;
+        let wsUrl = 'ws://' + host + ':' + port;
+        
+        if (isHttps) {
+            this.log('⚠️ Page is HTTPS, trying secure connection...', 'warning');
+            this.log('Note: For local pools, use HTTP instead of HTTPS', 'warning');
+            // Try WSS first, then fall back
+            wsUrl = 'wss://' + host + ':' + port;
+        }
         
         this.log('Connecting to: ' + wsUrl, 'info');
         
@@ -181,7 +191,11 @@ class MoneroMiner {
                 
                 this.ws.onerror = (err) => {
                     clearTimeout(timeout);
-                    reject(new Error('Connection failed'));
+                    if (isHttps && wsUrl.startsWith('wss://')) {
+                        reject(new Error('WSS failed - local pool may not support SSL'));
+                    } else {
+                        reject(new Error('Connection failed'));
+                    }
                 };
                 
                 this.ws.onclose = () => {
@@ -194,15 +208,35 @@ class MoneroMiner {
             this.log('', 'error');
             this.log('❌ Cannot connect to pool!', 'error');
             this.log('Error: ' + e.message, 'error');
-            this.log('', 'info');
-            this.log('📋 TO FIX THIS:', 'info');
-            this.log('1. Make sure P2Pool with WebSocket is running:', 'info');
-            this.log('   ./start-p2pool-with-websocket.sh', 'info');
-            this.log('', 'info');
-            this.log('2. Check that port ' + port + ' is open', 'info');
-            this.log('', 'info');
-            this.log('💡 ALTERNATIVE: Use XMRig for TCP mining:', 'success');
-            this.log('   ./xmrig -o ' + host + ':3333 -u ' + wallet.substring(0, 15) + '...', 'success');
+            
+            if (isHttps) {
+                this.log('', 'warning');
+                this.log('⚠️ HTTPS ISSUE DETECTED:', 'warning');
+                this.log('This page is served over HTTPS', 'warning');
+                this.log('Browsers block HTTPS pages from connecting to local WS://', 'warning');
+                this.log('', 'info');
+                this.log('📋 SOLUTIONS:', 'info');
+                this.log('Option 1: Open the web miner file directly:', 'info');
+                this.log('   file:///Users/sahyaboutorabi/Documents/p2pool-mining/web-miner/index.html', 'success');
+                this.log('', 'info');
+                this.log('Option 2: Run a local HTTP server:', 'info');
+                this.log('   cd ~/Documents/p2pool-mining/web-miner', 'info');
+                this.log('   python3 -m http.server 8081', 'info');
+                this.log('   Then open http://localhost:8081', 'success');
+                this.log('', 'info');
+                this.log('Option 3: Use XMRig (recommended):', 'info');
+                this.log('   ./xmrig -o ' + host + ':3333 -u ' + wallet.substring(0, 15) + '...', 'success');
+            } else {
+                this.log('', 'info');
+                this.log('📋 TO FIX THIS:', 'info');
+                this.log('1. Make sure P2Pool with WebSocket is running:', 'info');
+                this.log('   ./start-p2pool-with-websocket.sh', 'info');
+                this.log('', 'info');
+                this.log('2. Check that port ' + port + ' is open', 'info');
+                this.log('', 'info');
+                this.log('💡 Use XMRig for TCP mining:', 'success');
+                this.log('   ./xmrig -o ' + host + ':3333 -u ' + wallet.substring(0, 15) + '...', 'success');
+            }
         }
     }
 
